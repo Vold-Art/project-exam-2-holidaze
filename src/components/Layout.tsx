@@ -1,6 +1,9 @@
 import { Link, Outlet } from "react-router-dom";
 
 function Layout() {
+	const user = localStorage.getItem("user");
+	const parsedUser = user ? JSON.parse(user) : null;
+
 	return (
 		<div className="min-h-screen bg-gray-50 text-gray-900">
 			<header className="border-b bg-white">
@@ -11,9 +14,28 @@ function Layout() {
 
 					<nav className="flex gap-4 text-sm">
 						<Link to="/">Home</Link>
-						<Link to="/login">Login</Link>
-						<Link to="/profile">Profile</Link>
-						<Link to="/register">Register</Link>
+
+						{parsedUser ? (
+							<>
+								<span className="text-gray-500">{parsedUser?.name}</span>
+
+								<Link to="/profile">Profile</Link>
+
+								<button
+									onClick={() => {
+										localStorage.removeItem("user");
+										window.location.reload();
+									}}
+								>
+									Logout
+								</button>
+							</>
+						) : (
+							<>
+								<Link to="/login">Login</Link>
+								<Link to="/register">Register</Link>
+							</>
+						)}
 					</nav>
 				</div>
 			</header>
