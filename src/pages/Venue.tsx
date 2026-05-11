@@ -25,6 +25,11 @@ function Venue() {
 	const [venue, setVenue] = useState<Venue | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState("");
+	const [dateFrom, setDateFrom] = useState("");
+	const [dateTo, setDateTo] = useState("");
+	const [guests, setGuests] = useState(1);
+	const [bookingMessage, setBookingMessage] = useState("");
+	const [isBooking, setIsBooking] = useState(false);
 
 	useEffect(() => {
 		async function fetchVenue() {
@@ -61,6 +66,60 @@ function Venue() {
 		return <p>Venue not found.</p>;
 	}
 
+	async function handleBooking(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		setBookingMessage("");
+		setIsBooking(true);
+
+		const storedUser = localStorage.getItem("user");
+		const user = storedUser ? JSON.parse(storedUser) : null;
+
+		if (!user?.accessToken) {
+			setBookingMessage("You need to log in before booking.");
+			setIsBooking(false);
+			return;
+		}
+
+		try {
+			const response = await fetch(
+				`${import.meta.env.VITE_API_BASE_URL}/holidaze/bookings`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${user.accessToken}`,
+						"X-Noroff-API-Key": import.meta.env.VITE_NOROFF_API_KEY,
+					},
+					body: JSON.stringify({
+						dateFrom,
+						dateTo,
+						guests,
+						venueId: id,
+					}),
+				},
+			);
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.errors?.[0]?.message || "Booking failed");
+			}
+
+			setBookingMessage("Booking created successfully.");
+			setDateFrom("");
+			setDateTo("");
+			setGuests(1);
+		} catch (error) {
+			setBookingMessage(
+				error instanceof Error
+					? error.message
+					: "Something went wrong while creating the booking.",
+			);
+		} finally {
+			setIsBooking(false);
+		}
+	}
+
 	return (
 		<section className="grid gap-8 md:grid-cols-2">
 			<div className="h-72 overflow-hidden rounded-lg bg-gray-200">
@@ -95,9 +154,63 @@ function Venue() {
 					</p>
 				</div>
 
-				<button className="mt-8 rounded-lg bg-gray-900 px-5 py-3 text-white hover:bg-gray-700">
-					Book this venue
-				</button>
+				<form onSubmit={handleBooking} className="mt-8 space-y-4">
+					<div>
+						<label htmlFor="dateFrom" className="block text-sm font-medium">
+							Check-in
+						</label>
+						<input
+							id="dateFrom"
+							type="date"
+							value={dateFrom}
+							onChange={(event) => setDateFrom(event.target.value)}
+							required
+							className="mt-1 w-full rounded-lg border px-4 py-2"
+						/>
+					</div>
+
+					<div>
+						<label htmlFor="dateTo" className="block text-sm font-medium">
+							Check-out
+						</label>
+						<input
+							id="dateTo"
+							type="date"
+							value={dateTo}
+							onChange={(event) => setDateTo(event.target.value)}
+							required
+							className="mt-1 w-full rounded-lg border px-4 py-2"
+						/>
+					</div>
+
+					<div>
+						<label htmlFor="guests" className="block text-sm font-medium">
+							Guests
+						</label>
+						<input
+							id="guests"
+							type="number"
+							min="1"
+							max={venue.maxGuests}
+							value={guests}
+							onChange={(event) => setGuests(Number(event.target.value))}
+							required
+							className="mt-1 w-full rounded-lg border px-4 py-2"
+						/>
+					</div>
+
+					<button
+						type="submit"
+						disabled={isBooking}
+						className="rounded-lg bg-gray-900 px-5 py-3 text-white hover:bg-gray-700 disabled:bg-gray-400"
+					>
+						{isBooking ? "Booking..." : "Book this venue"}
+					</button>
+
+					{bookingMessage && (
+						<p className="text-sm text-gray-600">{bookingMessage}</p>
+					)}
+				</form>
 			</div>
 		</section>
 	);

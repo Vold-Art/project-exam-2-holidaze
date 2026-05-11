@@ -1,8 +1,13 @@
 import { Link, Outlet } from "react-router-dom";
 
 function Layout() {
-	const user = localStorage.getItem("user");
-	const parsedUser = user ? JSON.parse(user) : null;
+	const storedUser = localStorage.getItem("user");
+	const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+	function handleLogout() {
+		localStorage.removeItem("user");
+		window.location.href = "/";
+	}
 
 	return (
 		<div className="min-h-screen bg-gray-50 text-gray-900">
@@ -12,20 +17,17 @@ function Layout() {
 						Holidaze
 					</Link>
 
-					<nav className="flex gap-4 text-sm">
+					<nav className="flex items-center gap-4 text-sm">
 						<Link to="/">Home</Link>
 
 						{parsedUser ? (
 							<>
-								<span className="text-gray-500">{parsedUser?.name}</span>
-
+								<span className="text-gray-500">{parsedUser.name}</span>
 								<Link to="/profile">Profile</Link>
-
 								<button
-									onClick={() => {
-										localStorage.removeItem("user");
-										window.location.reload();
-									}}
+									type="button"
+									onClick={handleLogout}
+									className="text-left"
 								>
 									Logout
 								</button>

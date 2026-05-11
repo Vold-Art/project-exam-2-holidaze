@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [message, setMessage] = useState("");
@@ -32,10 +34,9 @@ function Login() {
 				throw new Error(result.errors?.[0]?.message || "Login failed");
 			}
 
-			// 🔑 Save user + token
 			localStorage.setItem("user", JSON.stringify(result.data));
 
-			setMessage("Login successful");
+			window.location.href = "/profile";
 		} catch (error) {
 			setMessage(
 				error instanceof Error
