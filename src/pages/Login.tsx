@@ -15,7 +15,7 @@ function Login() {
 
 		try {
 			const response = await fetch(
-				`${import.meta.env.VITE_API_BASE_URL}/auth/login`,
+				`${import.meta.env.VITE_API_BASE_URL}/auth/login?_holidaze=true`,
 				{
 					method: "POST",
 					headers: {

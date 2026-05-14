@@ -24,6 +24,7 @@ function Layout() {
 							<>
 								<span className="text-gray-500">{parsedUser.name}</span>
 								<Link to="/profile">Profile</Link>
+								{parsedUser.venueManager && <Link to="/manager">Manager</Link>}
 								<button
 									type="button"
 									onClick={handleLogout}

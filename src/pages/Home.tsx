@@ -27,7 +27,7 @@ function Home() {
 		async function fetchVenues() {
 			try {
 				const response = await fetch(
-					`${import.meta.env.VITE_API_BASE_URL}/holidaze/venues`,
+					`${import.meta.env.VITE_API_BASE_URL}/holidaze/venues?sort=created&sortOrder=desc`,
 				);
 
 				if (!response.ok) {
