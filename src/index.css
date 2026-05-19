@@ -13,7 +13,7 @@
 
 body {
 	font-family: "Exo", sans-serif;
+	font-weight: 300;
 	background-color: var(--color-background);
 	color: var(--color-text-primary);
-	min-height: 100vh;
 }

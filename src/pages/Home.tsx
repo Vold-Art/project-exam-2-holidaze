@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Button from "../components/Button";
 
 type Venue = {
 	id: string;
@@ -84,7 +85,7 @@ function Home() {
 			<h1 className="sr-only">Venues</h1>
 
 			<section className="mb-10 rounded-2xl bg-[var(--color-brand-primary)] p-6 shadow-lg">
-				<h2 className="mb-4 text-2xl font-semibold text-white">
+				<h2 className="mb-4 text-2xl font-normal text-white">
 					Find your perfect stay
 				</h2>
 
@@ -192,27 +193,27 @@ function Home() {
 			)}
 
 			<div className="mt-8 flex items-center justify-center gap-4">
-				<button
+				<Button
 					type="button"
+					variant="accent"
 					onClick={() => setPage((currentPage) => Math.max(currentPage - 1, 1))}
 					disabled={page === 1}
-					className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					Previous
-				</button>
+				</Button>
 
-				<span className="text-sm text-[var(--color-text-secondary)]">
+				<span className="text-sm font-normal text-[var(--color-text-secondary)]">
 					Page {page}
 				</span>
 
-				<button
+				<Button
 					type="button"
+					variant="primary"
 					onClick={() => setPage((currentPage) => currentPage + 1)}
 					disabled={filteredVenues.length < 30}
-					className="rounded-lg bg-[var(--color-brand-primary)] px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					Next
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
