@@ -24,13 +24,22 @@ function Home() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [maxPrice, setMaxPrice] = useState("");
 	const [guestCount, setGuestCount] = useState("");
+	const [page, setPage] = useState(1);
+	const [totalVenues, setTotalVenues] = useState(0);
+
+	function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
+		setSearchTerm(event.target.value);
+		setPage(1);
+	}
 
 	useEffect(() => {
 		async function fetchVenues() {
 			try {
-				const response = await fetch(
-					`${import.meta.env.VITE_API_BASE_URL}/holidaze/venues?sort=created&sortOrder=desc`,
-				);
+				const endpoint = searchTerm
+					? `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues/search?q=${encodeURIComponent(searchTerm)}&limit=30&page=${page}`
+					: `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues?sort=created&sortOrder=desc&limit=30&page=${page}`;
+
+				const response = await fetch(endpoint);
 
 				if (!response.ok) {
 					throw new Error("Failed to fetch venues");
@@ -38,6 +47,7 @@ function Home() {
 
 				const result = await response.json();
 				setVenues(result.data);
+				setTotalVenues(result.meta.totalCount);
 			} catch (error) {
 				setError("Something went wrong while loading venues.");
 			} finally {
@@ -46,7 +56,7 @@ function Home() {
 		}
 
 		fetchVenues();
-	}, []);
+	}, [searchTerm, page]);
 
 	if (isLoading) {
 		return <p>Loading venues...</p>;
@@ -57,21 +67,13 @@ function Home() {
 	}
 
 	const filteredVenues = venues.filter((venue) => {
-		const searchValue = searchTerm.toLowerCase();
-
-		const matchesSearch =
-			venue.name.toLowerCase().includes(searchValue) ||
-			venue.description.toLowerCase().includes(searchValue) ||
-			venue.location?.city?.toLowerCase().includes(searchValue) ||
-			venue.location?.country?.toLowerCase().includes(searchValue);
-
 		const matchesPrice = maxPrice ? venue.price <= Number(maxPrice) : true;
 
 		const matchesGuests = guestCount
 			? venue.maxGuests >= Number(guestCount)
 			: true;
 
-		return matchesSearch && matchesPrice && matchesGuests;
+		return matchesPrice && matchesGuests;
 	});
 
 	return (
@@ -83,7 +85,7 @@ function Home() {
 					type="search"
 					placeholder="Search by name, place or description..."
 					value={searchTerm}
-					onChange={(event) => setSearchTerm(event.target.value)}
+					onChange={handleSearchChange}
 					className="w-full rounded-lg border bg-white px-4 py-3"
 				/>
 
@@ -108,7 +110,7 @@ function Home() {
 
 			<div className="mb-4 flex items-center justify-between text-sm text-gray-600">
 				<p>
-					Showing {filteredVenues.length} of {venues.length} venues
+					Showing {filteredVenues.length} of {totalVenues} venues
 				</p>
 
 				{(searchTerm || maxPrice || guestCount) && (
@@ -158,6 +160,30 @@ function Home() {
 					))}
 				</div>
 			)}
+
+			<div className="mt-8 flex items-center justify-center gap-4">
+				<button
+					type="button"
+					onClick={() => setPage((currentPage) => Math.max(currentPage - 1, 1))}
+					disabled={page === 1}
+					className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+				>
+					Previous
+				</button>
+
+				<span className="text-sm text-[var(--color-text-secondary)]">
+					Page {page}
+				</span>
+
+				<button
+					type="button"
+					onClick={() => setPage((currentPage) => currentPage + 1)}
+					disabled={filteredVenues.length < 30}
+					className="rounded-lg bg-[var(--color-brand-primary)] px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+				>
+					Next
+				</button>
+			</div>
 		</div>
 	);
 }
