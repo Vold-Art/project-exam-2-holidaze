@@ -13,7 +13,7 @@ function Layout() {
 
 	return (
 		<div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text-primary)]">
-			<header className="border-b bg-white">
+			<header className="bg-white">
 				<div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
 					<Link
 						to="/"

@@ -76,41 +76,68 @@ function Home() {
 		return matchesPrice && matchesGuests;
 	});
 
+	const startVenue = totalVenues === 0 ? 0 : (page - 1) * 30 + 1;
+	const endVenue = Math.min(page * 30, totalVenues);
+
 	return (
 		<div>
-			<h1 className="mb-6 text-2xl font-bold">Venues</h1>
+			<h1 className="sr-only">Venues</h1>
 
-			<div className="mb-6 grid gap-4 md:grid-cols-3">
-				<input
-					type="search"
-					placeholder="Search by name, place or description..."
-					value={searchTerm}
-					onChange={handleSearchChange}
-					className="w-full rounded-lg border bg-white px-4 py-3"
-				/>
+			<section className="mb-10 rounded-2xl bg-[var(--color-brand-primary)] p-6 shadow-lg">
+				<h2 className="mb-4 text-2xl font-semibold text-white">
+					Find your perfect stay
+				</h2>
 
-				<input
-					type="number"
-					min="0"
-					placeholder="Max price"
-					value={maxPrice}
-					onChange={(event) => setMaxPrice(event.target.value)}
-					className="w-full rounded-lg border bg-white px-4 py-3"
-				/>
+				<div className="grid gap-4 md:grid-cols-4">
+					<div className="md:col-span-2">
+						<label htmlFor="venueSearch" className="sr-only">
+							Search venues
+						</label>
+						<input
+							id="venueSearch"
+							type="search"
+							placeholder="Search by location or venue name..."
+							value={searchTerm}
+							onChange={handleSearchChange}
+							className="w-full rounded-lg bg-white px-4 py-3"
+						/>
+					</div>
 
-				<input
-					type="number"
-					min="1"
-					placeholder="Guests"
-					value={guestCount}
-					onChange={(event) => setGuestCount(event.target.value)}
-					className="w-full rounded-lg border bg-white px-4 py-3"
-				/>
-			</div>
+					<div>
+						<label htmlFor="maxPrice" className="sr-only">
+							Max price
+						</label>
+						<input
+							id="maxPrice"
+							type="number"
+							min="0"
+							placeholder="Max price"
+							value={maxPrice}
+							onChange={(event) => setMaxPrice(event.target.value)}
+							className="w-full rounded-lg bg-white px-4 py-3"
+						/>
+					</div>
 
-			<div className="mb-4 flex items-center justify-between text-sm text-gray-600">
+					<div>
+						<label htmlFor="guestCount" className="sr-only">
+							Guests
+						</label>
+						<input
+							id="guestCount"
+							type="number"
+							min="1"
+							placeholder="Guests"
+							value={guestCount}
+							onChange={(event) => setGuestCount(event.target.value)}
+							className="w-full rounded-lg bg-white px-4 py-3"
+						/>
+					</div>
+				</div>
+			</section>
+
+			<div className="mb-4 flex items-center justify-between text-sm text-[var(--color-text-secondary)]">
 				<p>
-					Showing {filteredVenues.length} of {totalVenues} venues
+					Showing {startVenue}–{endVenue} of {totalVenues} venues
 				</p>
 
 				{(searchTerm || maxPrice || guestCount) && (
@@ -120,8 +147,9 @@ function Home() {
 							setSearchTerm("");
 							setMaxPrice("");
 							setGuestCount("");
+							setPage(1);
 						}}
-						className="font-medium text-gray-900 underline"
+						className="font-medium text-[var(--color-text-primary)] underline"
 					>
 						Clear filters
 					</button>
@@ -129,12 +157,14 @@ function Home() {
 			</div>
 
 			{filteredVenues.length === 0 ? (
-				<p className="text-gray-500">No venues match your search or filters.</p>
+				<p className="text-[var(--color-text-secondary)]">
+					No venues match your search or filters.
+				</p>
 			) : (
 				<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 					{filteredVenues.map((venue) => (
 						<Link key={venue.id} to={`/venue/${venue.id}`}>
-							<article className="overflow-hidden rounded-lg border bg-white shadow hover:bg-gray-100">
+							<article className="overflow-hidden rounded-lg border-2 border-[var(--color-brand-primary)] bg-white shadow transition hover:shadow-lg">
 								<div className="h-48 bg-gray-200">
 									{venue.media?.[0]?.url && (
 										<img
@@ -148,7 +178,7 @@ function Home() {
 								<div className="p-4">
 									<h2 className="text-lg font-semibold">{venue.name}</h2>
 
-									<p className="mt-1 text-sm text-gray-500">
+									<p className="mt-1 text-sm text-[var(--color-text-secondary)]">
 										{venue.location?.city || "Unknown location"},{" "}
 										{venue.location?.country || ""}
 									</p>
