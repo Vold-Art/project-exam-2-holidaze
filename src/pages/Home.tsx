@@ -22,6 +22,8 @@ function Home() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
+	const [maxPrice, setMaxPrice] = useState("");
+	const [guestCount, setGuestCount] = useState("");
 
 	useEffect(() => {
 		async function fetchVenues() {
@@ -57,27 +59,75 @@ function Home() {
 	const filteredVenues = venues.filter((venue) => {
 		const searchValue = searchTerm.toLowerCase();
 
-		return (
+		const matchesSearch =
 			venue.name.toLowerCase().includes(searchValue) ||
+			venue.description.toLowerCase().includes(searchValue) ||
 			venue.location?.city?.toLowerCase().includes(searchValue) ||
-			venue.location?.country?.toLowerCase().includes(searchValue)
-		);
+			venue.location?.country?.toLowerCase().includes(searchValue);
+
+		const matchesPrice = maxPrice ? venue.price <= Number(maxPrice) : true;
+
+		const matchesGuests = guestCount
+			? venue.maxGuests >= Number(guestCount)
+			: true;
+
+		return matchesSearch && matchesPrice && matchesGuests;
 	});
 
 	return (
 		<div>
 			<h1 className="mb-6 text-2xl font-bold">Venues</h1>
 
-			<input
-				type="search"
-				placeholder="Search venues..."
-				value={searchTerm}
-				onChange={(event) => setSearchTerm(event.target.value)}
-				className="mb-6 w-full rounded-lg border bg-white px-4 py-3"
-			/>
+			<div className="mb-6 grid gap-4 md:grid-cols-3">
+				<input
+					type="search"
+					placeholder="Search by name, place or description..."
+					value={searchTerm}
+					onChange={(event) => setSearchTerm(event.target.value)}
+					className="w-full rounded-lg border bg-white px-4 py-3"
+				/>
+
+				<input
+					type="number"
+					min="0"
+					placeholder="Max price"
+					value={maxPrice}
+					onChange={(event) => setMaxPrice(event.target.value)}
+					className="w-full rounded-lg border bg-white px-4 py-3"
+				/>
+
+				<input
+					type="number"
+					min="1"
+					placeholder="Guests"
+					value={guestCount}
+					onChange={(event) => setGuestCount(event.target.value)}
+					className="w-full rounded-lg border bg-white px-4 py-3"
+				/>
+			</div>
+
+			<div className="mb-4 flex items-center justify-between text-sm text-gray-600">
+				<p>
+					Showing {filteredVenues.length} of {venues.length} venues
+				</p>
+
+				{(searchTerm || maxPrice || guestCount) && (
+					<button
+						type="button"
+						onClick={() => {
+							setSearchTerm("");
+							setMaxPrice("");
+							setGuestCount("");
+						}}
+						className="font-medium text-gray-900 underline"
+					>
+						Clear filters
+					</button>
+				)}
+			</div>
 
 			{filteredVenues.length === 0 ? (
-				<p className="text-gray-500">No venues found.</p>
+				<p className="text-gray-500">No venues match your search or filters.</p>
 			) : (
 				<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 					{filteredVenues.map((venue) => (

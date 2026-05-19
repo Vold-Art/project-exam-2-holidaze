@@ -12,6 +12,12 @@ type Venue = {
 	price: number;
 	maxGuests: number;
 	rating: number;
+	bookings?: {
+		id: string;
+		dateFrom: string;
+		dateTo: string;
+		guests: number;
+	}[];
 	location: {
 		address?: string;
 		city?: string;
@@ -35,7 +41,7 @@ function Venue() {
 		async function fetchVenue() {
 			try {
 				const response = await fetch(
-					`${import.meta.env.VITE_API_BASE_URL}/holidaze/venues/${id}`,
+					`${import.meta.env.VITE_API_BASE_URL}/holidaze/venues/${id}?_bookings=true`,
 				);
 
 				if (!response.ok) {
@@ -76,6 +82,30 @@ function Venue() {
 
 		if (!user?.accessToken) {
 			setBookingMessage("You need to log in before booking.");
+			setIsBooking(false);
+			return;
+		}
+
+		const selectedStart = new Date(dateFrom);
+		const selectedEnd = new Date(dateTo);
+
+		if (selectedEnd <= selectedStart) {
+			setBookingMessage("Check-out date must be after check-in date.");
+			setIsBooking(false);
+			return;
+		}
+
+		const hasOverlap = venue?.bookings?.some((booking) => {
+			const bookedStart = new Date(booking.dateFrom);
+			const bookedEnd = new Date(booking.dateTo);
+
+			return selectedStart < bookedEnd && selectedEnd > bookedStart;
+		});
+
+		if (hasOverlap) {
+			setBookingMessage(
+				"These dates are already booked. Please choose another date.",
+			);
 			setIsBooking(false);
 			return;
 		}
@@ -152,6 +182,23 @@ function Venue() {
 					<p>
 						<span className="font-semibold">Rating:</span> {venue.rating}
 					</p>
+				</div>
+
+				<div className="mt-8 rounded-lg border bg-gray-50 p-4">
+					<h2 className="font-semibold">Booked dates</h2>
+
+					{!venue.bookings || venue.bookings.length === 0 ? (
+						<p className="mt-2 text-sm text-gray-600">No booked dates yet.</p>
+					) : (
+						<ul className="mt-2 space-y-2 text-sm text-gray-700">
+							{venue.bookings.map((booking) => (
+								<li key={booking.id}>
+									{new Date(booking.dateFrom).toLocaleDateString()} –{" "}
+									{new Date(booking.dateTo).toLocaleDateString()}
+								</li>
+							))}
+						</ul>
+					)}
 				</div>
 
 				<form onSubmit={handleBooking} className="mt-8 space-y-4">
