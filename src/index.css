@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@import url("https://fonts.googleapis.com/css2?family=Exo:wght@300;400;500;600;700&display=swap");
+
+:root {
+	--color-background: #ffffff;
+	--color-text-primary: #000000;
+	--color-text-secondary: #6b7280;
+	--color-brand-primary: #ff2582;
+	--color-brand-hover: #ff83b8;
+	--color-accent: #68b96a;
+	--color-accent-hover: #95da96;
+}
+
+body {
+	font-family: "Exo", sans-serif;
+	background-color: var(--color-background);
+	color: var(--color-text-primary);
+	min-height: 100vh;
+}
