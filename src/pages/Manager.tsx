@@ -8,6 +8,12 @@ type Venue = {
 	description?: string;
 	price: number;
 	maxGuests: number;
+	meta?: {
+		wifi?: boolean;
+		parking?: boolean;
+		breakfast?: boolean;
+		pets?: boolean;
+	};
 	bookings?: {
 		id: string;
 		dateFrom: string;
@@ -29,6 +35,10 @@ function Manager() {
 	const [mediaUrl, setMediaUrl] = useState("");
 	const [price, setPrice] = useState(0);
 	const [maxGuests, setMaxGuests] = useState(1);
+	const [wifi, setWifi] = useState(false);
+	const [parking, setParking] = useState(false);
+	const [breakfast, setBreakfast] = useState(false);
+	const [pets, setPets] = useState(false);
 	const [message, setMessage] = useState("");
 	const [isCreating, setIsCreating] = useState(false);
 	const [venues, setVenues] = useState<Venue[]>([]);
@@ -110,20 +120,18 @@ function Manager() {
 						name,
 						description,
 						media: mediaUrl
-							? [
-									{
-										url: mediaUrl,
-										alt: name,
-									},
-								]
+							? mediaUrl.split(",").map((url) => ({
+									url: url.trim(),
+									alt: name,
+								}))
 							: [],
 						price,
 						maxGuests,
 						meta: {
-							wifi: true,
-							parking: false,
-							breakfast: false,
-							pets: false,
+							wifi,
+							parking,
+							breakfast,
+							pets,
 						},
 					}),
 				},
@@ -146,6 +154,10 @@ function Manager() {
 			setMediaUrl("");
 			setPrice(0);
 			setMaxGuests(1);
+			setWifi(false);
+			setParking(false);
+			setBreakfast(false);
+			setPets(false);
 			setEditingVenueId(null);
 			fetchManagerVenues();
 		} catch (error) {
@@ -234,13 +246,14 @@ function Manager() {
 
 				<div>
 					<label htmlFor="mediaUrl" className="block text-sm font-normal">
-						Image URL
+						Image URLs
 					</label>
 					<input
 						id="mediaUrl"
-						type="url"
+						type="text"
 						value={mediaUrl}
 						onChange={(event) => setMediaUrl(event.target.value)}
+						placeholder="https://image1.jpg, https://image2.jpg"
 						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
@@ -274,6 +287,44 @@ function Manager() {
 							required
 							className="mt-1 w-full rounded-lg border px-4 py-3"
 						/>
+					</div>
+
+					<div className="grid gap-4 text-sm font-normal text-[var(--color-text-primary)] md:col-span-2 md:grid-cols-4">
+						<label className="flex items-center justify-center gap-2">
+							<input
+								type="checkbox"
+								checked={wifi}
+								onChange={(event) => setWifi(event.target.checked)}
+							/>
+							WiFi
+						</label>
+
+						<label className="flex items-center justify-center gap-2">
+							<input
+								type="checkbox"
+								checked={parking}
+								onChange={(event) => setParking(event.target.checked)}
+							/>
+							Parking
+						</label>
+
+						<label className="flex items-center justify-center gap-2">
+							<input
+								type="checkbox"
+								checked={breakfast}
+								onChange={(event) => setBreakfast(event.target.checked)}
+							/>
+							Breakfast
+						</label>
+
+						<label className="flex items-center justify-center gap-2">
+							<input
+								type="checkbox"
+								checked={pets}
+								onChange={(event) => setPets(event.target.checked)}
+							/>
+							Pets allowed
+						</label>
 					</div>
 				</div>
 
@@ -358,6 +409,10 @@ function Manager() {
 											setDescription(venue.description || "");
 											setPrice(venue.price);
 											setMaxGuests(venue.maxGuests);
+											setWifi(venue.meta?.wifi || false);
+											setParking(venue.meta?.parking || false);
+											setBreakfast(venue.meta?.breakfast || false);
+											setPets(venue.meta?.pets || false);
 										}}
 									>
 										Edit

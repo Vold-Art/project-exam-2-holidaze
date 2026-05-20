@@ -13,6 +13,15 @@ type Venue = {
 	price: number;
 	maxGuests: number;
 	rating: number;
+	meta?: {
+		wifi?: boolean;
+		parking?: boolean;
+		breakfast?: boolean;
+		pets?: boolean;
+	};
+	_count?: {
+		bookings?: number;
+	};
 	bookings?: {
 		id: string;
 		dateFrom: string;
@@ -153,15 +162,37 @@ function Venue() {
 
 	return (
 		<section className="grid gap-8 rounded-2xl border-2 border-[var(--color-brand-primary)] bg-white p-6 shadow-lg md:grid-cols-2">
-			<div className="h-72 overflow-hidden rounded-2xl bg-gray-100 md:h-full">
-				{venue.media?.[0]?.url && (
-					<img
-						src={venue.media[0].url}
-						alt={venue.media[0].alt || venue.name}
-						width="800"
-						height="600"
-						className="h-full w-full object-cover"
-					/>
+			<div className="space-y-4">
+				<div className="h-72 overflow-hidden rounded-lg bg-gray-200">
+					{venue.media?.[0]?.url && (
+						<img
+							src={venue.media[0].url}
+							alt={venue.media[0].alt || venue.name}
+							width="800"
+							height="600"
+							className="h-full w-full object-cover"
+						/>
+					)}
+				</div>
+
+				{venue.media.length > 1 && (
+					<div className="space-y-4">
+						{venue.media.slice(1).map((image) => (
+							<div
+								key={image.url}
+								className="h-72 overflow-hidden rounded-lg bg-gray-200"
+							>
+								<img
+									src={image.url}
+									alt={image.alt || venue.name}
+									width="800"
+									height="600"
+									loading="lazy"
+									className="h-full w-full object-cover"
+								/>
+							</div>
+						))}
+					</div>
 				)}
 			</div>
 
@@ -189,6 +220,23 @@ function Venue() {
 					<p>
 						<span className="font-normal">Rating:</span> {venue.rating}
 					</p>
+					<p>
+						<span className="font-normal">Bookings:</span>{" "}
+						{venue._count?.bookings || 0}
+					</p>
+				</div>
+
+				<div className="mt-8">
+					<h2 className="text-xl font-normal text-[var(--color-brand-primary)]">
+						Amenities
+					</h2>
+
+					<div className="mt-3 grid grid-cols-2 gap-3 text-sm text-[var(--color-text-secondary)]">
+						{venue.meta?.wifi && <p>✓ WiFi</p>}
+						{venue.meta?.parking && <p>✓ Parking</p>}
+						{venue.meta?.breakfast && <p>✓ Breakfast</p>}
+						{venue.meta?.pets && <p>✓ Pets allowed</p>}
+					</div>
 				</div>
 
 				<div className="mt-8 rounded-2xl border-2 border-[var(--color-brand-primary)] bg-white p-4">
