@@ -14,15 +14,23 @@ function Layout() {
 	return (
 		<div className="flex min-h-screen flex-col bg-[var(--color-background)] text-[var(--color-text-primary)]">
 			<header className="bg-white">
-				<div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+				<div className="mx-auto flex min-h-28 max-w-6xl items-center justify-between px-4 py-4">
 					<Link
 						to="/"
 						aria-label="Go to homepage"
 						className="flex items-center gap-3"
 					>
-						<img src={holidazeLogo} alt="" className="h-12 w-auto md:h-18" />
+						<div className="flex h-16 w-16 items-center justify-center md:h-20 md:w-20">
+							<img
+								src={holidazeLogo}
+								alt=""
+								width="80"
+								height="80"
+								className="h-12 w-auto md:h-20"
+							/>
+						</div>
 
-						<span className="leading-none text-3xl font-light tracking-wide text-[var(--color-brand-primary)] md:text-5xl">
+						<span className="hidden leading-none font-light tracking-wide text-[var(--color-brand-primary)] md:inline md:text-5xl">
 							HOLIDAZE
 						</span>
 					</Link>

@@ -19,6 +19,7 @@ type Venue = {
 };
 
 function Home() {
+	const ITEMS_PER_PAGE = 18;
 	const [venues, setVenues] = useState<Venue[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -40,8 +41,8 @@ function Home() {
 		async function fetchVenues() {
 			try {
 				const endpoint = searchTerm
-					? `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues/search?q=${encodeURIComponent(searchTerm)}&limit=30&page=${page}&sort=${sortField}&sortOrder=${sortOrder}`
-					: `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues?sort=${sortField}&sortOrder=${sortOrder}&limit=30&page=${page}`;
+					? `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues/search?q=${encodeURIComponent(searchTerm)}&limit=${ITEMS_PER_PAGE}&page=${page}&sort=${sortField}&sortOrder=${sortOrder}`
+					: `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues?sort=${sortField}&sortOrder=${sortOrder}&limit=${ITEMS_PER_PAGE}&page=${page}`;
 
 				const response = await fetch(endpoint);
 
@@ -62,14 +63,6 @@ function Home() {
 		fetchVenues();
 	}, [searchTerm, page, sortOption]);
 
-	if (isLoading) {
-		return <p>Loading venues...</p>;
-	}
-
-	if (error) {
-		return <p>{error}</p>;
-	}
-
 	const filteredVenues = venues.filter((venue) => {
 		const matchesPrice = maxPrice ? venue.price <= Number(maxPrice) : true;
 
@@ -80,8 +73,8 @@ function Home() {
 		return matchesPrice && matchesGuests;
 	});
 
-	const startVenue = totalVenues === 0 ? 0 : (page - 1) * 30 + 1;
-	const endVenue = Math.min(page * 30, totalVenues);
+	const startVenue = totalVenues === 0 ? 0 : (page - 1) * ITEMS_PER_PAGE + 1;
+	const endVenue = Math.min(page * ITEMS_PER_PAGE, totalVenues);
 
 	return (
 		<div>
@@ -139,7 +132,7 @@ function Home() {
 				</div>
 			</section>
 
-			<div className="mb-4 flex flex-col gap-4 text-sm text-[var(--color-text-secondary)] md:flex-row md:items-center md:justify-between">
+			<div className="mb-4 flex flex-col items-center gap-4 text-center text-sm text-[var(--color-text-secondary)] md:flex-row md:justify-between md:text-left">
 				<p>
 					Showing {startVenue}–{endVenue} of {totalVenues} venues
 				</p>
@@ -184,20 +177,32 @@ function Home() {
 				</div>
 			</div>
 
-			{filteredVenues.length === 0 ? (
+			{error ? (
+				<p className="text-[var(--color-brand-primary)]">{error}</p>
+			) : isLoading ? (
+				<p className="text-[var(--color-text-secondary)]">Loading venues...</p>
+			) : filteredVenues.length === 0 ? (
 				<p className="text-[var(--color-text-secondary)]">
 					No venues match your search or filters.
 				</p>
 			) : (
-				<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-					{filteredVenues.map((venue) => (
-						<Link key={venue.id} to={`/venue/${venue.id}`}>
+				<div className="grid grid-cols-1 justify-items-center gap-4 md:grid-cols-3">
+					{filteredVenues.map((venue, index) => (
+						<Link
+							key={venue.id}
+							to={`/venue/${venue.id}`}
+							className="w-full max-w-sm"
+						>
 							<article className="overflow-hidden rounded-lg border-2 border-[var(--color-brand-primary)] bg-white shadow transition hover:shadow-lg">
 								<div className="h-48 bg-gray-200">
 									{venue.media?.[0]?.url && (
 										<img
 											src={venue.media[0].url}
 											alt={venue.media[0].alt || venue.name}
+											width="400"
+											height="300"
+											loading={index === 0 ? "eager" : "lazy"}
+											fetchPriority={index === 0 ? "high" : "auto"}
 											className="h-full w-full object-cover"
 										/>
 									)}
@@ -237,7 +242,7 @@ function Home() {
 					type="button"
 					variant="primary"
 					onClick={() => setPage((currentPage) => currentPage + 1)}
-					disabled={filteredVenues.length < 30}
+					disabled={filteredVenues.length < ITEMS_PER_PAGE}
 				>
 					Next
 				</Button>

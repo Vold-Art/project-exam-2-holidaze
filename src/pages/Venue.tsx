@@ -158,6 +158,8 @@ function Venue() {
 					<img
 						src={venue.media[0].url}
 						alt={venue.media[0].alt || venue.name}
+						width="800"
+						height="600"
 						className="h-full w-full object-cover"
 					/>
 				)}
