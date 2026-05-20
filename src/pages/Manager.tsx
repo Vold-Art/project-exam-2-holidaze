@@ -8,6 +8,14 @@ type Venue = {
 	description?: string;
 	price: number;
 	maxGuests: number;
+	location?: {
+		city?: string;
+		country?: string;
+	};
+	media?: {
+		url: string;
+		alt?: string;
+	}[];
 	meta?: {
 		wifi?: boolean;
 		parking?: boolean;
@@ -33,6 +41,8 @@ function Manager() {
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
 	const [mediaUrl, setMediaUrl] = useState("");
+	const [city, setCity] = useState("");
+	const [country, setCountry] = useState("");
 	const [price, setPrice] = useState(0);
 	const [maxGuests, setMaxGuests] = useState(1);
 	const [wifi, setWifi] = useState(false);
@@ -127,6 +137,10 @@ function Manager() {
 							: [],
 						price,
 						maxGuests,
+						location: {
+							city,
+							country,
+						},
 						meta: {
 							wifi,
 							parking,
@@ -152,6 +166,8 @@ function Manager() {
 			setName("");
 			setDescription("");
 			setMediaUrl("");
+			setCity("");
+			setCountry("");
 			setPrice(0);
 			setMaxGuests(1);
 			setWifi(false);
@@ -260,6 +276,34 @@ function Manager() {
 
 				<div className="grid gap-4 md:grid-cols-2">
 					<div>
+						<label htmlFor="city" className="block text-sm font-normal">
+							City
+						</label>
+						<input
+							id="city"
+							type="text"
+							value={city}
+							onChange={(event) => setCity(event.target.value)}
+							className="mt-1 w-full rounded-lg border px-4 py-3"
+						/>
+					</div>
+
+					<div>
+						<label htmlFor="country" className="block text-sm font-normal">
+							Country
+						</label>
+						<input
+							id="country"
+							type="text"
+							value={country}
+							onChange={(event) => setCountry(event.target.value)}
+							className="mt-1 w-full rounded-lg border px-4 py-3"
+						/>
+					</div>
+				</div>
+
+				<div className="grid gap-4 md:grid-cols-2">
+					<div>
 						<label htmlFor="price" className="block text-sm font-normal">
 							Price per night
 						</label>
@@ -348,8 +392,14 @@ function Manager() {
 								setName("");
 								setDescription("");
 								setMediaUrl("");
+								setCity("");
+								setCountry("");
 								setPrice(0);
 								setMaxGuests(1);
+								setWifi(false);
+								setParking(false);
+								setBreakfast(false);
+								setPets(false);
 							}}
 						>
 							Cancel edit
@@ -407,6 +457,11 @@ function Manager() {
 											setEditingVenueId(venue.id);
 											setName(venue.name);
 											setDescription(venue.description || "");
+											setMediaUrl(
+												venue.media?.map((image) => image.url).join(", ") || "",
+											);
+											setCity(venue.location?.city || "");
+											setCountry(venue.location?.country || "");
 											setPrice(venue.price);
 											setMaxGuests(venue.maxGuests);
 											setWifi(venue.meta?.wifi || false);
