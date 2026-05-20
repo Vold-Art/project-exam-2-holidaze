@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import Button from "../components/Button";
 
 function Register() {
 	const [name, setName] = useState("");
@@ -53,12 +55,18 @@ function Register() {
 	}
 
 	return (
-		<section className="mx-auto max-w-md rounded-lg bg-white p-6 shadow">
-			<h1 className="text-2xl font-bold">Register</h1>
+		<section className="mx-auto max-w-md rounded-2xl border-2 border-[var(--color-brand-primary)] bg-white p-6 shadow-lg">
+			<h1 className="text-3xl font-normal text-[var(--color-brand-primary)]">
+				Register
+			</h1>
+
+			<p className="mt-2 text-sm text-[var(--color-text-secondary)]">
+				Create an account to start booking venues or managing your own listings.
+			</p>
 
 			<form onSubmit={handleSubmit} className="mt-6 space-y-4">
 				<div>
-					<label htmlFor="name" className="block text-sm font-medium">
+					<label htmlFor="name" className="block text-sm font-normal">
 						Username
 					</label>
 					<input
@@ -67,12 +75,12 @@ function Register() {
 						value={name}
 						onChange={(event) => setName(event.target.value)}
 						required
-						className="mt-1 w-full rounded-lg border px-4 py-2"
+						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
 
 				<div>
-					<label htmlFor="email" className="block text-sm font-medium">
+					<label htmlFor="email" className="block text-sm font-normal">
 						Email
 					</label>
 					<input
@@ -83,12 +91,12 @@ function Register() {
 						required
 						pattern="^[\w\-.]+@stud\.noroff\.no$"
 						title="Please use a stud.noroff.no email address"
-						className="mt-1 w-full rounded-lg border px-4 py-2"
+						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
 
 				<div>
-					<label htmlFor="password" className="block text-sm font-medium">
+					<label htmlFor="password" className="block text-sm font-normal">
 						Password
 					</label>
 					<input
@@ -98,11 +106,11 @@ function Register() {
 						onChange={(event) => setPassword(event.target.value)}
 						required
 						minLength={8}
-						className="mt-1 w-full rounded-lg border px-4 py-2"
+						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
 
-				<label className="flex items-center gap-2 text-sm">
+				<label className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
 					<input
 						type="checkbox"
 						checked={venueManager}
@@ -111,16 +119,26 @@ function Register() {
 					Register as venue manager
 				</label>
 
-				<button
-					type="submit"
-					disabled={isLoading}
-					className="w-full rounded-lg bg-gray-900 px-4 py-3 text-white hover:bg-gray-700 disabled:bg-gray-400"
-				>
+				<Button type="submit" disabled={isLoading} className="w-full">
 					{isLoading ? "Registering..." : "Register"}
-				</button>
+				</Button>
 			</form>
 
-			{message && <p className="mt-4 text-sm">{message}</p>}
+			{message && (
+				<p className="mt-4 text-sm text-[var(--color-brand-primary)]">
+					{message}
+				</p>
+			)}
+
+			<p className="mt-6 text-sm text-[var(--color-text-secondary)]">
+				Already have an account?{" "}
+				<Link
+					to="/login"
+					className="font-normal text-[var(--color-brand-primary)] underline"
+				>
+					Log in here
+				</Link>
+			</p>
 		</section>
 	);
 }

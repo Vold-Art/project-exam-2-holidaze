@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import Button from "../components/Button";
 
 type Venue = {
 	id: string;
@@ -194,13 +195,18 @@ function Manager() {
 	}
 
 	return (
-		<section className="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow">
-			<h1 className="text-2xl font-bold">Venue Manager</h1>
-			<p className="mt-4 text-gray-600">Create and manage your venues here.</p>
+		<section className="mx-auto max-w-4xl rounded-2xl border-2 border-[var(--color-brand-primary)] bg-white p-6 shadow-lg">
+			<h1 className="text-3xl font-normal text-[var(--color-brand-primary)]">
+				Venue Manager
+			</h1>
+
+			<p className="mt-2 text-sm text-[var(--color-text-secondary)]">
+				Create and manage your venues here.
+			</p>
 
 			<form onSubmit={handleSubmitVenue} className="mt-8 space-y-4">
 				<div>
-					<label htmlFor="name" className="block text-sm font-medium">
+					<label htmlFor="name" className="block text-sm font-normal">
 						Venue name
 					</label>
 					<input
@@ -209,12 +215,12 @@ function Manager() {
 						value={name}
 						onChange={(event) => setName(event.target.value)}
 						required
-						className="mt-1 w-full rounded-lg border px-4 py-2"
+						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
 
 				<div>
-					<label htmlFor="description" className="block text-sm font-medium">
+					<label htmlFor="description" className="block text-sm font-normal">
 						Description
 					</label>
 					<textarea
@@ -222,12 +228,12 @@ function Manager() {
 						value={description}
 						onChange={(event) => setDescription(event.target.value)}
 						required
-						className="mt-1 w-full rounded-lg border px-4 py-2"
+						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
 
 				<div>
-					<label htmlFor="mediaUrl" className="block text-sm font-medium">
+					<label htmlFor="mediaUrl" className="block text-sm font-normal">
 						Image URL
 					</label>
 					<input
@@ -235,85 +241,95 @@ function Manager() {
 						type="url"
 						value={mediaUrl}
 						onChange={(event) => setMediaUrl(event.target.value)}
-						className="mt-1 w-full rounded-lg border px-4 py-2"
+						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
 
-				<div>
-					<label htmlFor="price" className="block text-sm font-medium">
-						Price per night
-					</label>
-					<input
-						id="price"
-						type="number"
-						min="0"
-						value={price}
-						onChange={(event) => setPrice(Number(event.target.value))}
-						required
-						className="mt-1 w-full rounded-lg border px-4 py-2"
-					/>
+				<div className="grid gap-4 md:grid-cols-2">
+					<div>
+						<label htmlFor="price" className="block text-sm font-normal">
+							Price per night
+						</label>
+						<input
+							id="price"
+							type="number"
+							min="0"
+							value={price}
+							onChange={(event) => setPrice(Number(event.target.value))}
+							required
+							className="mt-1 w-full rounded-lg border px-4 py-3"
+						/>
+					</div>
+
+					<div>
+						<label htmlFor="maxGuests" className="block text-sm font-normal">
+							Max guests
+						</label>
+						<input
+							id="maxGuests"
+							type="number"
+							min="1"
+							value={maxGuests}
+							onChange={(event) => setMaxGuests(Number(event.target.value))}
+							required
+							className="mt-1 w-full rounded-lg border px-4 py-3"
+						/>
+					</div>
 				</div>
 
-				<div>
-					<label htmlFor="maxGuests" className="block text-sm font-medium">
-						Max guests
-					</label>
-					<input
-						id="maxGuests"
-						type="number"
-						min="1"
-						value={maxGuests}
-						onChange={(event) => setMaxGuests(Number(event.target.value))}
-						required
-						className="mt-1 w-full rounded-lg border px-4 py-2"
-					/>
+				<div className="flex flex-wrap gap-3">
+					<Button type="submit" disabled={isCreating}>
+						{isCreating
+							? editingVenueId
+								? "Updating..."
+								: "Creating..."
+							: editingVenueId
+								? "Update venue"
+								: "Create venue"}
+					</Button>
+
+					{editingVenueId && (
+						<Button
+							type="button"
+							variant="accent"
+							onClick={() => {
+								setEditingVenueId(null);
+								setName("");
+								setDescription("");
+								setMediaUrl("");
+								setPrice(0);
+								setMaxGuests(1);
+							}}
+						>
+							Cancel edit
+						</Button>
+					)}
 				</div>
 
-				<button
-					type="submit"
-					disabled={isCreating}
-					className="rounded-lg bg-gray-900 px-5 py-3 text-white hover:bg-gray-700 disabled:bg-gray-400"
-				>
-					{isCreating
-						? editingVenueId
-							? "Updating..."
-							: "Creating..."
-						: editingVenueId
-							? "Update venue"
-							: "Create venue"}
-				</button>
-
-				{editingVenueId && (
-					<button
-						type="button"
-						onClick={() => {
-							setEditingVenueId(null);
-							setName("");
-							setDescription("");
-							setMediaUrl("");
-							setPrice(0);
-							setMaxGuests(1);
-						}}
-						className="ml-3 rounded-lg border px-5 py-3"
-					>
-						Cancel edit
-					</button>
+				{message && (
+					<p className="text-sm text-[var(--color-brand-primary)]">{message}</p>
 				)}
-
-				{message && <p className="text-sm text-gray-600">{message}</p>}
 			</form>
 
-			<div className="mt-10">
-				<h2 className="text-xl font-bold">Your venues</h2>
+			<div className="mt-12">
+				<h2 className="text-2xl font-normal text-[var(--color-brand-primary)]">
+					Your venues
+				</h2>
 
 				{isLoadingVenues && (
-					<p className="mt-4 text-gray-600">Loading your venues...</p>
+					<p className="mt-4 text-[var(--color-text-secondary)]">
+						Loading your venues...
+					</p>
 				)}
 
-				{venuesError && <p className="mt-4 text-red-600">{venuesError}</p>}
+				{venuesError && (
+					<p className="mt-4 text-[var(--color-brand-primary)]">
+						{venuesError}
+					</p>
+				)}
 
 				{!isLoadingVenues && !venuesError && venues.length === 0 && (
-					<p className="mt-4 text-gray-600">
+					<p className="mt-4 text-[var(--color-text-secondary)]">
 						You have not created any venues yet.
 					</p>
 				)}
@@ -323,39 +339,44 @@ function Manager() {
 						{venues.map((venue) => (
 							<article
 								key={venue.id}
-								className="rounded-lg border bg-gray-50 p-4"
+								className="rounded-2xl border-2 border-[var(--color-brand-primary)] bg-white p-4 shadow"
 							>
-								<h3 className="font-semibold">{venue.name}</h3>
-								<p className="mt-1 text-sm text-gray-600">
+								<h3 className="text-xl font-normal">{venue.name}</h3>
+
+								<p className="mt-1 text-sm text-[var(--color-text-secondary)]">
 									${venue.price} / night · Max guests: {venue.maxGuests}
 								</p>
 
-								<button
-									type="button"
-									onClick={() => {
-										setEditingVenueId(venue.id);
-										setName(venue.name);
-										setDescription(venue.description || "");
-										setPrice(venue.price);
-										setMaxGuests(venue.maxGuests);
-									}}
-									className="mt-4 mr-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-								>
-									Edit
-								</button>
+								<div className="mt-4 flex flex-wrap gap-3">
+									<Button
+										type="button"
+										variant="accent"
+										className="px-4 py-2 text-sm"
+										onClick={() => {
+											setEditingVenueId(venue.id);
+											setName(venue.name);
+											setDescription(venue.description || "");
+											setPrice(venue.price);
+											setMaxGuests(venue.maxGuests);
+										}}
+									>
+										Edit
+									</Button>
 
-								<button
-									type="button"
-									onClick={() => handleDeleteVenue(venue.id)}
-									className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-								>
-									Delete
-								</button>
-								<div className="mt-4 border-t pt-4">
-									<h4 className="font-medium">Bookings</h4>
+									<Button
+										type="button"
+										className="px-4 py-2 text-sm"
+										onClick={() => handleDeleteVenue(venue.id)}
+									>
+										Delete
+									</Button>
+								</div>
+
+								<div className="mt-4 border-t border-[var(--color-brand-primary)] pt-4">
+									<h4 className="font-normal">Bookings</h4>
 
 									{!venue.bookings || venue.bookings.length === 0 ? (
-										<p className="mt-2 text-sm text-gray-600">
+										<p className="mt-2 text-sm text-[var(--color-text-secondary)]">
 											No bookings for this venue yet.
 										</p>
 									) : (
@@ -363,23 +384,23 @@ function Manager() {
 											{venue.bookings.map((booking) => (
 												<div
 													key={booking.id}
-													className="rounded bg-white p-3 text-sm"
+													className="rounded-lg bg-gray-50 p-3 text-sm"
 												>
 													<p>
-														<span className="font-medium">From:</span>{" "}
+														<span className="font-normal">From:</span>{" "}
 														{new Date(booking.dateFrom).toLocaleDateString()}
 													</p>
 													<p>
-														<span className="font-medium">To:</span>{" "}
+														<span className="font-normal">To:</span>{" "}
 														{new Date(booking.dateTo).toLocaleDateString()}
 													</p>
 													<p>
-														<span className="font-medium">Guests:</span>{" "}
+														<span className="font-normal">Guests:</span>{" "}
 														{booking.guests}
 													</p>
 													{booking.customer && (
 														<p>
-															<span className="font-medium">Customer:</span>{" "}
+															<span className="font-normal">Customer:</span>{" "}
 															{booking.customer.name}
 														</p>
 													)}

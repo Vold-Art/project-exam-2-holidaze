@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import Button from "../components/Button";
 
 function Login() {
-	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [message, setMessage] = useState("");
@@ -35,7 +35,6 @@ function Login() {
 			}
 
 			localStorage.setItem("user", JSON.stringify(result.data));
-
 			window.location.href = "/profile";
 		} catch (error) {
 			setMessage(
@@ -49,42 +48,64 @@ function Login() {
 	}
 
 	return (
-		<section className="mx-auto max-w-md rounded-lg bg-white p-6 shadow">
-			<h1 className="text-2xl font-bold">Login</h1>
+		<section className="mx-auto max-w-md rounded-2xl border-2 border-[var(--color-brand-primary)] bg-white p-6 shadow-lg">
+			<h1 className="text-3xl font-normal text-[var(--color-brand-primary)]">
+				Login
+			</h1>
+
+			<p className="mt-2 text-sm text-[var(--color-text-secondary)]">
+				Log in to book venues and manage your profile.
+			</p>
 
 			<form onSubmit={handleSubmit} className="mt-6 space-y-4">
 				<div>
-					<label className="block text-sm font-medium">Email</label>
+					<label htmlFor="email" className="block text-sm font-normal">
+						Email
+					</label>
 					<input
+						id="email"
 						type="email"
 						value={email}
-						onChange={(e) => setEmail(e.target.value)}
+						onChange={(event) => setEmail(event.target.value)}
 						required
-						className="mt-1 w-full rounded-lg border px-4 py-2"
+						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium">Password</label>
+					<label htmlFor="password" className="block text-sm font-normal">
+						Password
+					</label>
 					<input
+						id="password"
 						type="password"
 						value={password}
-						onChange={(e) => setPassword(e.target.value)}
+						onChange={(event) => setPassword(event.target.value)}
 						required
-						className="mt-1 w-full rounded-lg border px-4 py-2"
+						className="mt-1 w-full rounded-lg border px-4 py-3"
 					/>
 				</div>
 
-				<button
-					type="submit"
-					disabled={isLoading}
-					className="w-full rounded-lg bg-gray-900 px-4 py-3 text-white"
-				>
+				<Button type="submit" disabled={isLoading} className="w-full">
 					{isLoading ? "Logging in..." : "Login"}
-				</button>
+				</Button>
 			</form>
 
-			{message && <p className="mt-4 text-sm">{message}</p>}
+			{message && (
+				<p className="mt-4 text-sm text-[var(--color-brand-primary)]">
+					{message}
+				</p>
+			)}
+
+			<p className="mt-6 text-sm text-[var(--color-text-secondary)]">
+				No account yet?{" "}
+				<Link
+					to="/register"
+					className="font-normal text-[var(--color-brand-primary)] underline"
+				>
+					Register here
+				</Link>
+			</p>
 		</section>
 	);
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Button from "../components/Button";
 
 type Venue = {
 	id: string;
@@ -151,8 +152,8 @@ function Venue() {
 	}
 
 	return (
-		<section className="grid gap-8 md:grid-cols-2">
-			<div className="h-72 overflow-hidden rounded-lg bg-gray-200">
+		<section className="grid gap-8 rounded-2xl border-2 border-[var(--color-brand-primary)] bg-white p-6 shadow-lg md:grid-cols-2">
+			<div className="h-72 overflow-hidden rounded-2xl bg-gray-100 md:h-full">
 				{venue.media?.[0]?.url && (
 					<img
 						src={venue.media[0].url}
@@ -163,34 +164,42 @@ function Venue() {
 			</div>
 
 			<div>
-				<p className="text-sm text-gray-500">
+				<p className="text-sm text-[var(--color-text-secondary)]">
 					{venue.location?.city || "Unknown location"},{" "}
 					{venue.location?.country || ""}
 				</p>
 
-				<h1 className="mt-2 text-3xl font-bold">{venue.name}</h1>
+				<h1 className="mt-2 text-3xl font-normal text-[var(--color-brand-primary)]">
+					{venue.name}
+				</h1>
 
-				<p className="mt-4 text-gray-700">{venue.description}</p>
+				<p className="mt-4 text-[var(--color-text-secondary)]">
+					{venue.description}
+				</p>
 
 				<div className="mt-6 space-y-2">
 					<p>
-						<span className="font-semibold">Price:</span> ${venue.price} / night
+						<span className="font-normal">Price:</span> ${venue.price} / night
 					</p>
 					<p>
-						<span className="font-semibold">Max guests:</span> {venue.maxGuests}
+						<span className="font-normal">Max guests:</span> {venue.maxGuests}
 					</p>
 					<p>
-						<span className="font-semibold">Rating:</span> {venue.rating}
+						<span className="font-normal">Rating:</span> {venue.rating}
 					</p>
 				</div>
 
-				<div className="mt-8 rounded-lg border bg-gray-50 p-4">
-					<h2 className="font-semibold">Booked dates</h2>
+				<div className="mt-8 rounded-2xl border-2 border-[var(--color-brand-primary)] bg-white p-4">
+					<h2 className="text-xl font-normal text-[var(--color-brand-primary)]">
+						Booked dates
+					</h2>
 
 					{!venue.bookings || venue.bookings.length === 0 ? (
-						<p className="mt-2 text-sm text-gray-600">No booked dates yet.</p>
+						<p className="mt-2 text-sm text-[var(--color-text-secondary)]">
+							No booked dates yet.
+						</p>
 					) : (
-						<ul className="mt-2 space-y-2 text-sm text-gray-700">
+						<ul className="mt-2 space-y-2 text-sm text-[var(--color-text-secondary)]">
 							{venue.bookings.map((booking) => (
 								<li key={booking.id}>
 									{new Date(booking.dateFrom).toLocaleDateString()} –{" "}
@@ -203,7 +212,7 @@ function Venue() {
 
 				<form onSubmit={handleBooking} className="mt-8 space-y-4">
 					<div>
-						<label htmlFor="dateFrom" className="block text-sm font-medium">
+						<label htmlFor="dateFrom" className="block text-sm font-normal">
 							Check-in
 						</label>
 						<input
@@ -212,12 +221,12 @@ function Venue() {
 							value={dateFrom}
 							onChange={(event) => setDateFrom(event.target.value)}
 							required
-							className="mt-1 w-full rounded-lg border px-4 py-2"
+							className="mt-1 w-full rounded-lg border px-4 py-3"
 						/>
 					</div>
 
 					<div>
-						<label htmlFor="dateTo" className="block text-sm font-medium">
+						<label htmlFor="dateTo" className="block text-sm font-normal">
 							Check-out
 						</label>
 						<input
@@ -226,12 +235,12 @@ function Venue() {
 							value={dateTo}
 							onChange={(event) => setDateTo(event.target.value)}
 							required
-							className="mt-1 w-full rounded-lg border px-4 py-2"
+							className="mt-1 w-full rounded-lg border px-4 py-3"
 						/>
 					</div>
 
 					<div>
-						<label htmlFor="guests" className="block text-sm font-medium">
+						<label htmlFor="guests" className="block text-sm font-normal">
 							Guests
 						</label>
 						<input
@@ -242,20 +251,18 @@ function Venue() {
 							value={guests}
 							onChange={(event) => setGuests(Number(event.target.value))}
 							required
-							className="mt-1 w-full rounded-lg border px-4 py-2"
+							className="mt-1 w-full rounded-lg border px-4 py-3"
 						/>
 					</div>
 
-					<button
-						type="submit"
-						disabled={isBooking}
-						className="rounded-lg bg-gray-900 px-5 py-3 text-white hover:bg-gray-700 disabled:bg-gray-400"
-					>
+					<Button type="submit" disabled={isBooking}>
 						{isBooking ? "Booking..." : "Book this venue"}
-					</button>
+					</Button>
 
 					{bookingMessage && (
-						<p className="text-sm text-gray-600">{bookingMessage}</p>
+						<p className="text-sm text-[var(--color-brand-primary)]">
+							{bookingMessage}
+						</p>
 					)}
 				</form>
 			</div>

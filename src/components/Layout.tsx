@@ -12,7 +12,7 @@ function Layout() {
 	}
 
 	return (
-		<div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text-primary)]">
+		<div className="flex min-h-screen flex-col bg-[var(--color-background)] text-[var(--color-text-primary)]">
 			<header className="bg-white">
 				<div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
 					<Link
@@ -72,9 +72,32 @@ function Layout() {
 				</div>
 			</header>
 
-			<main className="mx-auto max-w-6xl px-4 py-8">
+			<main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
 				<Outlet />
 			</main>
+
+			<footer className="mt-12 px-4">
+				<div className="mx-auto max-w-6xl rounded-t-2xl bg-[var(--color-brand-primary)] px-8 py-16 text-white">
+					<div className="flex flex-col items-center text-center">
+						<h2 className="mb-20 text-2xl font-normal text-white">
+							Discover venues for every kind of getaway.
+						</h2>
+
+						<div className="flex flex-col items-center gap-6 md:flex-row md:gap-30">
+							<p className="text-sm font-normal">© 2026 Arnt Helge Vold</p>
+
+							<nav
+								aria-label="Footer navigation"
+								className="flex gap-8 text-sm font-normal underline"
+							>
+								<Link to="/">Home</Link>
+								<Link to="/register">Register</Link>
+								<Link to="/login">Login</Link>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</footer>
 		</div>
 	);
 }
