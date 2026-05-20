@@ -257,9 +257,11 @@ function Venue() {
 						/>
 					</div>
 
-					<Button type="submit" disabled={isBooking}>
-						{isBooking ? "Booking..." : "Book this venue"}
-					</Button>
+					<div className="flex justify-center md:justify-start">
+						<Button type="submit" disabled={isBooking}>
+							{isBooking ? "Booking..." : "Book this venue"}
+						</Button>
+					</div>
 
 					{bookingMessage && (
 						<p className="text-sm text-[var(--color-brand-primary)]">
