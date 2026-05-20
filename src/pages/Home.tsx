@@ -27,18 +27,21 @@ function Home() {
 	const [guestCount, setGuestCount] = useState("");
 	const [page, setPage] = useState(1);
 	const [totalVenues, setTotalVenues] = useState(0);
+	const [sortOption, setSortOption] = useState("created-desc");
 
 	function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
 		setSearchTerm(event.target.value);
 		setPage(1);
 	}
 
+	const [sortField, sortOrder] = sortOption.split("-");
+
 	useEffect(() => {
 		async function fetchVenues() {
 			try {
 				const endpoint = searchTerm
-					? `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues/search?q=${encodeURIComponent(searchTerm)}&limit=30&page=${page}`
-					: `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues?sort=created&sortOrder=desc&limit=30&page=${page}`;
+					? `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues/search?q=${encodeURIComponent(searchTerm)}&limit=30&page=${page}&sort=${sortField}&sortOrder=${sortOrder}`
+					: `${import.meta.env.VITE_API_BASE_URL}/holidaze/venues?sort=${sortField}&sortOrder=${sortOrder}&limit=30&page=${page}`;
 
 				const response = await fetch(endpoint);
 
@@ -57,7 +60,7 @@ function Home() {
 		}
 
 		fetchVenues();
-	}, [searchTerm, page]);
+	}, [searchTerm, page, sortOption]);
 
 	if (isLoading) {
 		return <p>Loading venues...</p>;
@@ -136,25 +139,49 @@ function Home() {
 				</div>
 			</section>
 
-			<div className="mb-4 flex items-center justify-between text-sm text-[var(--color-text-secondary)]">
+			<div className="mb-4 flex flex-col gap-4 text-sm text-[var(--color-text-secondary)] md:flex-row md:items-center md:justify-between">
 				<p>
 					Showing {startVenue}–{endVenue} of {totalVenues} venues
 				</p>
 
-				{(searchTerm || maxPrice || guestCount) && (
-					<button
-						type="button"
-						onClick={() => {
-							setSearchTerm("");
-							setMaxPrice("");
-							setGuestCount("");
+				<div className="flex flex-wrap items-center gap-4">
+					<label
+						htmlFor="sortOption"
+						className="font-normal text-[var(--color-text-secondary)]"
+					>
+						Sort by
+					</label>
+
+					<select
+						id="sortOption"
+						value={sortOption}
+						onChange={(event) => {
+							setSortOption(event.target.value);
 							setPage(1);
 						}}
-						className="font-medium text-[var(--color-text-primary)] underline"
+						className="rounded-lg border-2 border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)] px-4 pr-8 py-2 font-normal text-white"
 					>
-						Clear filters
-					</button>
-				)}
+						<option value="created-desc">Newest</option>
+						<option value="created-asc">Oldest</option>
+						<option value="price-asc">Price: low to high</option>
+						<option value="price-desc">Price: high to low</option>
+					</select>
+
+					{(searchTerm || maxPrice || guestCount) && (
+						<button
+							type="button"
+							onClick={() => {
+								setSearchTerm("");
+								setMaxPrice("");
+								setGuestCount("");
+								setPage(1);
+							}}
+							className="font-normal text-[var(--color-text-primary)] underline"
+						>
+							Clear filters
+						</button>
+					)}
+				</div>
 			</div>
 
 			{filteredVenues.length === 0 ? (
