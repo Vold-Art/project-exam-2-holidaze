@@ -230,6 +230,7 @@ function Home() {
 					variant="accent"
 					onClick={() => setPage((currentPage) => Math.max(currentPage - 1, 1))}
 					disabled={page === 1}
+					className="w-28"
 				>
 					Previous
 				</Button>
@@ -243,6 +244,7 @@ function Home() {
 					variant="primary"
 					onClick={() => setPage((currentPage) => currentPage + 1)}
 					disabled={filteredVenues.length < ITEMS_PER_PAGE}
+					className="w-28"
 				>
 					Next
 				</Button>
