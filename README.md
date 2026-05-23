@@ -74,42 +74,45 @@ npm run preview   # Preview production build locally
 ## Features
 
 **Visitor / customer**
--Browse venues
--Search venues using the API search endpoint
--Filter venues by max price and guest count
--Sort venues by newest, oldest, price low to high, and price high to low
--Paginated venue results
--View venue details
--View venue images
--View amenities
--View booked dates
--Register and log in
--Create bookings
--Booking date validation
--Prevent overlapping bookings
--View own bookings on profile page
--Update avatar
+
+- Browse venues
+- Search venues using the API search endpoint
+- Filter venues by max price and guest count
+- Sort venues by newest, oldest, price low to high, and price high to low
+- Paginated venue results
+- View venue details
+- View venue images
+- View amenities
+- View booked dates
+- Register and log in
+- Create bookings
+- Booking date validation
+- Prevent overlapping bookings
+- View own bookings on profile page
+- Update avatar
 
 **Venue manager**
--Register as a venue manager
--Access protected manager dashboard
--Create venues
--Add multiple image URLs
--Add city and country
--Add amenities
--Edit own venues
--Delete own venues
--View bookings for managed venues
+
+- Register as a venue manager
+- Access protected manager dashboard
+- Create venues
+- Add multiple image URLs
+- Add city and country
+- Add amenities
+- Edit own venues
+- Delete own venues
+- View bookings for managed venues
 
 **UI and quality**
--Responsive layout
--Custom logo and favicon
--Reusable button component
--Shared color system
--Google Font: Exo
--Accessibility improvements
--SEO improvements
--Lighthouse performance optimizations
+
+- Responsive layout
+- Custom logo and favicon
+- Reusable button component
+- Shared color system
+- Google Font: Exo
+- Accessibility improvements
+- SEO improvements
+- Lighthouse performance optimizations
 
 ---
 
