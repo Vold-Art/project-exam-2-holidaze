@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import Button from "../components/Button";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [message, setMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -35,7 +36,7 @@ function Login() {
 			}
 
 			localStorage.setItem("user", JSON.stringify(result.data));
-			window.location.href = "/profile";
+			navigate("/profile");
 		} catch (error) {
 			setMessage(
 				error instanceof Error

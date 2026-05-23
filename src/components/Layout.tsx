@@ -1,14 +1,15 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import holidazeLogo from "../assets/holidaze-logo.png";
 import Button from "./Button";
 
 function Layout() {
 	const storedUser = localStorage.getItem("user");
 	const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+	const navigate = useNavigate();
 
 	function handleLogout() {
 		localStorage.removeItem("user");
-		window.location.href = "/";
+		navigate("/");
 	}
 
 	return (
